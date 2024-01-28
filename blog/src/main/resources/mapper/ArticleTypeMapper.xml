@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.blog.dao.ArticleTypeDAO">
+    <resultMap id="BaseResultMap" type="com.example.blog.entity.ArticleType">
+        <id column="id" property="value" jdbcType="INTEGER"/>
+        <result column="type_name" property="label" jdbcType="VARCHAR"/>
+        <result column="parent_id" property="parent" jdbcType="INTEGER"/>
+        <result column="num" property="num" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, type_name, parent_id, num
+  </sql>
+
+    <select id="selectArticleTypeList" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from blog_type
+    </select>
+
+    <select id="selectArticleTypeById" resultMap="BaseResultMap" parameterType="Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from blog_type
+        <where>
+            id = #{value}
+        </where>
+    </select>
+
+    <select id="selectArticleTypeByParentId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from blog_type
+        <where>
+            parent_id = #{value}
+        </where>
+    </select>
+
+    <update id="updateArticleType" parameterType="com.example.blog.entity.ArticleType">
+        update blog_type
+        <set>
+            <if test="label !=null and label!=''">
+                type_name = #{label},
+            </if>
+            <if test="parent != null">
+                parent_id = #{parent},
+            </if>
+            <if test="num != null">
+                num = #{num},
+            </if>
+        </set>
+        <where>
+            id = #{value}
+        </where>
+    </update>
+
+    <insert id="insertArticleType" parameterType="com.example.blog.entity.ArticleType">
+        <selectKey resultType="java.lang.Integer" keyProperty="value" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into blog_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="label !=null and label!=''">
+                type_name,
+            </if>
+            <if test="parent != null">
+                parent_id,
+            </if>
+            <if test="num != null">
+                num,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="label !=null and label!=''">
+                #{label,jdbcType=VARCHAR},
+            </if>
+            <if test="parent != null">
+                #{parent, jdbcType=INTEGER},
+            </if>
+            <if test="num != null">
+                #{num, jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteArticleTypeById">
+        delete from blog_type where id = #{value}
+    </delete>
+
+</mapper>

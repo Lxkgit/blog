@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.blog.dao.BlogArticleDAO" >
+    <resultMap id="BaseResultMap" type="com.example.blog.entity.Article" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="uid" property="uid" jdbcType="INTEGER" />
+        <result column="article_title" property="article_title" jdbcType="VARCHAR" />
+        <result column="article_content_html" property="article_content_html" jdbcType="LONGVARCHAR" />
+        <result column="article_content_md" property="article_content_md" jdbcType="LONGVARCHAR" />
+        <result column="article_abstract" property="article_abstract" jdbcType="VARCHAR" />
+        <result column="article_cover" property="article_cover" jdbcType="VARCHAR" />
+        <result column="article_date" property="article_date" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+    id, uid, article_title, article_content_html, article_content_md, article_abstract, article_cover, article_date
+  </sql>
+
+    <select id="findAll" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from blog_article
+    </select>
+
+    <select id="findAllById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from blog_article
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="findAllByUid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from blog_article
+        where uid = #{uid,jdbcType=INTEGER}
+    </select>
+
+    <update id="updateArticle" parameterType="com.example.blog.entity.Article">
+        update blog_article
+        <set>
+            <if test="article_title !=null and article_title!=''">
+                article_title = #{article_title},
+            </if>
+            <if test="article_content_html !=null and article_content_html !=''">
+                article_content_html = #{article_content_html},
+            </if>
+            <if test="article_content_md !=null and article_content_md !=''">
+                article_content_md = #{article_content_md},
+            </if>
+            <if test="article_abstract !=null and article_abstract !=''">
+                article_abstract = #{article_abstract},
+            </if>
+            <if test="article_cover !=null">
+                article_cover = #{article_cover},
+            </if>
+            <if test="article_date !=null">
+                article_date = #{article_date},
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <insert id="saveArticle" parameterType="com.example.blog.entity.Article">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into blog_article
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="uid != null" >
+                uid,
+            </if>
+            <if test="article_title != null" >
+                article_title,
+            </if>
+            <if test="article_content_html != null" >
+                article_content_html,
+            </if>
+            <if test="article_content_md != null" >
+                article_content_md,
+            </if>
+            <if test="article_abstract != null" >
+                article_abstract,
+            </if>
+            <if test="article_cover != null" >
+                article_cover,
+            </if>
+            <if test="article_date != null" >
+                article_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="uid != null" >
+                #{uid,jdbcType=VARCHAR},
+            </if>
+            <if test="article_title != null" >
+                #{article_title,jdbcType=VARCHAR},
+            </if>
+            <if test="article_content_html != null" >
+                #{article_content_html,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="article_content_md != null" >
+                #{article_content_md,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="article_abstract != null" >
+                #{article_abstract,jdbcType=VARCHAR},
+            </if>
+            <if test="article_cover != null" >
+                #{article_cover,jdbcType=VARCHAR},
+            </if>
+            <if test="article_date != null" >
+                #{article_date,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteArticleById">
+        delete from blog_article where id = #{id}
+    </delete>
+
+</mapper>

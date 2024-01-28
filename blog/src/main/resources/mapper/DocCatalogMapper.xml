@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.blog.dao.DocCatalogDAO">
+    <resultMap id="BaseResultMap" type="com.example.blog.entity.DocCatalog">
+        <id column="id" property="value" jdbcType="INTEGER"/>
+        <result column="doc_name" property="title" jdbcType="VARCHAR"/>
+        <result column="parent_id" property="parent" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, doc_name, parent_id
+    </sql>
+
+    <select id="selectDocCatalogList" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List"/>
+        from doc_catalog
+    </select>
+
+    <select id="selectDocCatalogByParentId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from doc_catalog
+        <where>
+            parent_id = #{id}
+        </where>
+    </select>
+
+    <insert id="insertDocCatalog" parameterType="com.example.blog.entity.DocCatalog">
+        <selectKey resultType="java.lang.Integer" keyProperty="value" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into doc_catalog
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title !=null and title !=''">
+                doc_name,
+            </if>
+            <if test="parent !=null">
+                parent_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title !=null and title != ''">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="parent !=null">
+                #{parent,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateDocCatalog" parameterType="com.example.blog.entity.DocCatalog">
+        update doc_catalog
+        <set>
+            <if test="title !=null and title !=''">
+                doc_name = #{title},
+            </if>
+            <if test="parent !=null">
+                parent_id = #{parent},
+            </if>
+        </set>
+        <where>
+            id = #{value}
+        </where>
+    </update>
+
+    <delete id="deleteDocCatalogById">
+        delete from doc_catalog where id = #{value}
+    </delete>
+
+
+</mapper>

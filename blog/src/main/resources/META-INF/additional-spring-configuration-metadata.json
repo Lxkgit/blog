@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "spring.mail.from",
+      "type": "java.lang.String",
+      "description": "470687917@qq.com"
+    }
+  ]
+}

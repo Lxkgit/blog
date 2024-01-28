@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.blog.dao.ArticleLabelDAO">
+    <resultMap id="BaseResultMap" type="com.example.blog.entity.ArticleLabel">
+        <id column="label_id" property="labelId" jdbcType="INTEGER"/>
+        <result column="label_name" property="labelName" jdbcType="VARCHAR"/>
+        <result column="label_type" property="labelTypeId" jdbcType="INTEGER"/>
+        <result column="article_num" property="articleNum" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        label_id, label_name, label_type, article_num
+    </sql>
+
+    <select id="selectArticleLabelList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from blog_label
+    </select>
+
+    <select id="selectArticleLabelById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from blog_label
+        where label_id = #{labelId}
+    </select>
+    
+    <select id="selectArticleLabelByLabelType" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select <include refid="Base_Column_List"/>
+        from blog_label
+        where label_type = #{labelTypeId}
+    </select>
+
+    <insert id="insertArticleLabel" parameterType="com.example.blog.entity.ArticleLabel">
+        insert into blog_label
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="labelId !=null">
+                label_id,
+            </if>
+            <if test="labelName !=null and labelName!=''">
+                label_name,
+            </if>
+            <if test="labelTypeId !=null and labelTypeId!=''">
+                label_type,
+            </if>
+            <if test="articleNum !=null">
+                article_num,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="labelId !=null" >
+                #{labelId, jdbcType=INTEGER},
+            </if>
+            <if test="labelName !=null and labelName!=''" >
+                #{labelName, jdbcType=VARCHAR},
+            </if>
+            <if test="labelTypeId !=null and labelTypeId!=''" >
+                #{labelTypeId, jdbcType=INTEGER},
+            </if>
+            <if test="articleNum !=null" >
+                #{articleNum, jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateArticleLabel" parameterType="com.example.blog.entity.ArticleLabel">
+        update blog_label
+        <set>
+            <if test="labelName !=null and labelName!=''">
+                label_name = #{labelName},
+            </if>
+            <if test="labelTypeId !=null">
+                label_type = #{labelTypeId},
+            </if>
+            <if test="articleNum !=null">
+                article_num = #{articleNum},
+            </if>
+        </set>
+        <where>
+            label_id = #{labelId}
+        </where>
+    </update>
+
+    <delete id="deleteArticleLabelById">
+        delete from blog_label where label_id = #{labelId}
+    </delete>
+
+</mapper>

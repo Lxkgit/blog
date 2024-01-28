@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.blog.dao.DocContentDAO">
+        <resultMap id="BaseResultMap" type="com.example.blog.entity.DocContent">
+            <id column="id" property="id" jdbcType="INTEGER"/>
+            <result column="doc_name" property="title" jdbcType="VARCHAR"/>
+            <result column="doc_content_md" property="content_md" jdbcType="VARCHAR"/>
+            <result column="doc_content_html" property="content_html" jdbcType="VARCHAR"/>
+        </resultMap>
+    <sql id="Base_Column_List">
+        id, doc_name, doc_content_md, doc_content_html
+    </sql>
+
+    <select id="selectDocContentById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from doc_content
+        where id = #{id}
+    </select>
+
+    <insert id="insertDocContent" parameterType="com.example.blog.entity.DocContent">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into doc_content
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id !=null">
+                id,
+            </if>
+            <if test="title !=null and title !=''">
+                doc_name,
+            </if>
+            <if test="content_md !=null and content_md !=''">
+                doc_content_md,
+            </if>
+            <if test="content_html !=null and content_html !=''">
+                doc_content_html,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id !=null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="title !=null and title !=''">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="content_md !=null and content_md !=''">
+                #{content_md,jdbcType=VARCHAR},
+            </if>
+            <if test="content_html !=null and content_html !=''">
+                #{content_html,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateDocContent" parameterType="com.example.blog.entity.DocContent">
+        update doc_content
+        <set>
+            <if test="title !=null and title !=''">
+                doc_name = #{title},
+            </if>
+            <if test="content_md !=null and content_md !=''">
+                doc_content_md = #{content_md},
+            </if>
+            <if test="content_html !=null and content_html !=''">
+                doc_content_html = #{content_html},
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <delete id="deleteDocContentById">
+        delete from doc_content where id = #{id}
+    </delete>
+
+</mapper>

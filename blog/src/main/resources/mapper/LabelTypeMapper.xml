@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.blog.dao.LabelTypeDAO">
+    <resultMap id="BaseResultMap" type="com.example.blog.entity.LabelType">
+        <id column="label_type_id" property="labelTypeId" jdbcType="INTEGER"/>
+        <result column="label_type_name" property="labelTypeName" jdbcType="VARCHAR"/>
+        <result column="label_num" property="labelNum" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="CollectionResultMap" type="com.example.blog.entity.LabelType">
+        <id column="label_type_id" property="labelTypeId" jdbcType="INTEGER"/>
+        <result column="label_type_name" property="labelTypeName" jdbcType="VARCHAR"/>
+        <result column="label_num" property="labelNum" jdbcType="INTEGER"/>
+        <collection property="articleLabelList" ofType="com.example.blog.entity.ArticleLabel">
+            <id column="label_id" property="labelId" jdbcType="INTEGER"/>
+            <result column="label_name" property="labelName" jdbcType="VARCHAR"/>
+            <result column="label_type" property="labelTypeId" jdbcType="INTEGER"/>
+            <result column="article_num" property="articleNum" jdbcType="INTEGER"/>
+        </collection>
+    </resultMap>
+    <sql id="Base_Column_List">
+        label_type_id, label_type_name, label_num
+    </sql>
+    <sql id="Collection_Column_List">
+        label_type_id, label_type_name, label_num, label_id, label_name, label_type, article_num
+    </sql>
+
+    <select id="selectLabelTypeList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from blog_label_type
+    </select>
+
+    <select id="selectLabelTypeAndLabelList" resultMap="CollectionResultMap">
+        select
+        <include refid="Collection_Column_List"/>
+        from blog_label_type, blog_label
+        where
+        label_type_id = label_type
+    </select>
+
+    <select id="selectLabelTypeById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from blog_label_type
+        where label_type_id = #{labelTypeId}
+    </select>
+
+    <select id="selectLabelTypeAndLabelById" resultMap="CollectionResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Collection_Column_List"/>
+        from blog_label_type, blog_label
+        where label_type_id = #{labelTypeId} and label_type_id = label_type
+    </select>
+
+    <insert id="insertLabelType" parameterType="com.example.blog.entity.LabelType">
+        insert into blog_label_type
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="labelTypeId !=null">
+                label_type_id,
+            </if>
+            <if test="labelTypeName !=null and labelTypeName!=''">
+                label_type_name,
+            </if>
+            <if test="labelNum !=null">
+                label_num,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="labelTypeId !=null" >
+                #{labelTypeId, jdbcType=INTEGER},
+            </if>
+            <if test="labelTypeName !=null and labelTypeName!=''" >
+                #{labelTypeName, jdbcType=VARCHAR},
+            </if>
+            <if test="labelNum !=null" >
+                #{labelNum, jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateLabelType" parameterType="com.example.blog.entity.LabelType">
+        update blog_label_type
+        <set>
+            <if test="labelTypeName !=null and labelTypeName!=''">
+                label_type_name = #{labelType},
+            </if>
+            <if test="labelNum !=null">
+                label_num = #{labelType},
+            </if>
+        </set>
+        <where>
+            label_type_id = #{labelTypeId}
+        </where>
+    </update>
+
+    <delete id="deleteLabelTypeById">
+        delete from blog_label_type where label_type_id = #{labelTypeId}
+    </delete>
+
+</mapper>

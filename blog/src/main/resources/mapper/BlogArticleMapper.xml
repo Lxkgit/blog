@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.blog.dao.BlogArticleDAO" >
+    <resultMap id="BaseResultMap" type="com.example.blog.entity.Article" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="create_time" property="create_time" jdbcType="DATE"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="browse_count" property="browse_count" jdbcType="INTEGER"/>
+        <result column="like_count" property="like_count" jdbcType="INTEGER"/>
+        <result column="content_md" property="content_md" jdbcType="VARCHAR"/>
+        <result column="content_html" property="content_html" jdbcType="VARCHAR"/>
+        <result column="article_type" property="articleType" jdbcType="VARCHAR"/>
+        <result column="article_label" property="articleLabel" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List" >
+    id, create_time, title, browse_count, like_count, content_md, content_html, article_type, article_label
+  </sql>
+
+    <select id="selectArticleList" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from blog_article
+        limit #{startNum}, #{pageSize}
+    </select>
+
+    <select id="selectArticleCount" resultType="java.lang.Integer">
+        select count(*) from blog_article;
+    </select>
+
+    <select id="selectArticleById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from blog_article
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <update id="updateArticle" parameterType="com.example.blog.entity.Article">
+        update blog_article
+        <set>
+            <if test="create_time !=null">
+                create_time = #{create_time},
+            </if>
+            <if test="title !=null and title!=''">
+                title = #{title},
+            </if>
+            <if test="browse_count !=null and browse_count !=''">
+                browse_count = #{browse_count},
+            </if>
+            <if test="like_count !=null and like_count !=''">
+                like_count = #{like_count},
+            </if>
+            <if test="content_md !=null and content_md !=''">
+                content_md = #{content_md},
+            </if>
+            <if test="content_html !=null and content_html !=''">
+                content_html = #{content_html},
+            </if>
+            <if test="articleType !=null and articleType !=''">
+                article_type = #{articleType},
+            </if>
+            <if test="articleLabel !=null and articleLabel !=''">
+                article_label = #{articleLabel},
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <insert id="insertArticle" parameterType="com.example.blog.entity.Article">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into blog_article
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="create_time !=null">
+                create_time,
+            </if>
+            <if test="title !=null and title!=''">
+                title,
+            </if>
+            <if test="browse_count !=null and browse_count !=''">
+                browse_count,
+            </if>
+            <if test="like_count !=null and like_count !=''">
+                like_count,
+            </if>
+            <if test="content_md !=null and content_md !=''">
+                content_md,
+            </if>
+            <if test="content_html !=null and content_html !=''">
+                content_html,
+            </if>
+            <if test="articleType !=null and articleType !=''">
+                article_type,
+            </if>
+            <if test="articleLabel !=null and articleLabel !=''">
+                article_label,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="create_time !=null" >
+                #{create_time,jdbcType=DATE},
+            </if>
+            <if test="title !=null and title!=''" >
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="browse_count !=null and browse_count !=''" >
+                #{browse_count,jdbcType=INTEGER},
+            </if>
+            <if test="like_count !=null and like_count !=''" >
+                #{like_count,jdbcType=INTEGER},
+            </if>
+            <if test="content_md !=null and content_md !=''" >
+                #{content_md,jdbcType=VARCHAR},
+            </if>
+            <if test="content_html !=null and content_html !=''" >
+                #{content_html,jdbcType=VARCHAR},
+            </if>
+            <if test="articleType !=null and articleType !=''" >
+                #{articleType,jdbcType=VARCHAR},
+            </if>
+            <if test="articleLabel !=null and articleLabel !=''" >
+                #{articleLabel,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteArticleById">
+        delete from blog_article where id = #{id}
+    </delete>
+
+</mapper>

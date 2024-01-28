@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.blog.dao.AdminRoleDAO" >
+    <resultMap id="BaseResultMap" type="com.example.blog.entity.AdminRole" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="name_zh" property="nameZh" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+    id, name, name_zh, status
+  </sql>
+
+    <select id="selectRoleList" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from admin_role
+    </select>
+
+    <update id="updateRole" parameterType="com.example.blog.entity.AdminRole">
+        update admin_role
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="nameZh != null and nameZh != ''">
+                name_zh = #{nameZh},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <insert id="insertRole" parameterType="com.example.blog.entity.AdminRole">
+        insert into admin_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name !=''">
+                name,
+            </if>
+            <if test="nameZh != null and nameZh !=''">
+                name_zh,
+            </if>
+            <if test="status != null and status !=''">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name !=''">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="nameZh != null and nameZh !=''">
+                #{nameZh,jdbcType=VARCHAR},
+            </if>
+             <if test="status != null and status !=''">
+                #{status,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteRoleById" parameterType="java.lang.Integer">
+        delete from admin_role where id = #{id}
+    </delete>
+</mapper>

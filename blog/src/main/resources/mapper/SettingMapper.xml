@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.blog.dao.SettingDAO">
+    <resultMap id="BaseResultMap" type="com.example.blog.entity.Setting">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="setting_title" property="title" jdbcType="VARCHAR"/>
+        <result column="setting_type" property="type" jdbcType="VARCHAR"/>
+        <result column="setting_key" property="key" jdbcType="VARCHAR"/>
+        <result column="setting_value" property="value" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, setting_title, setting_type, setting_key, setting_value
+    </sql>
+
+    <select id="selectSettingList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from setting
+    </select>
+
+    <select id="selectSettingByKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from setting
+        where setting_key = #{key}
+    </select>
+
+    <update id="updateValueByKey" parameterType="com.example.blog.entity.Setting">
+        update setting
+        <set>
+            <if test="title !=null and title!=''">
+                setting_title = #{title},
+            </if>
+            <if test="value !=null and value!=''">
+                setting_value = #{value},
+            </if>
+        </set>
+        <where>
+            setting_key = #{key}
+        </where>
+    </update>
+
+</mapper>

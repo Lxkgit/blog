@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.blog.dao.AdminPermissionDAO" >
+    <resultMap id="BaseResultMap" type="com.example.blog.entity.AdminPermission" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="desc_" property="desc_" jdbcType="VARCHAR" />
+        <result column="url" property="url" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="ALl_Menu">
+        id, name, desc_, url
+    </sql>
+    <select id="selectPermissionByIds" resultMap="BaseResultMap" parameterType="java.util.List" >
+        select
+        <include refid="ALl_Menu" />
+        from admin_permission
+        where id in
+        <foreach collection="list" index="index" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectPermissionList" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="ALl_Menu" />
+        from admin_permission
+    </select>
+
+    <select id="findPermsByRoleId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="ALl_Menu" />
+        from admin_permission
+        where id = #{id, jdbcType=INTEGER}
+    </select>
+</mapper>
